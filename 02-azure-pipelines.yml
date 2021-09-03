@@ -12,18 +12,21 @@ pool:
 stages:
 - stage: build
   jobs:
-    - job: firstJob
+    - job: buildJob
       steps:
-       - bash: echo build job 
+       - bash: echo build job, this is $(variable-pipelineLevel)
 - stage: devDeploy
+  variables: 
+    variable-env: dev 
+  dependsOn: build
   jobs:
-  - job: secondJob
+  - job: devJob
     steps:
-      - script: echo devDeploy job
+      - script: echo devDeploy job this is $(variable-dev)
 - stage: QADeploy
   dependsOn: devDeploy
   jobs:
-  - job: secondJob
+  - job: QAJob
     steps:
       - script: echo QADeploy job
 - stage: ProdDeploy
@@ -31,7 +34,7 @@ stages:
   - devDeploy
   - QADeploy
   jobs:
-  - job: secondJob
+  - job: ProdJob
     steps:
       - script: echo ProdDeploy job 
   
